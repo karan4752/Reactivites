@@ -2,9 +2,8 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { Activity } from "../models/Activity";
 import agent from "../api/agent";
 import { v4 as uuid } from "uuid";
+import { format } from "date-fns";
 export default class ActivityStore {
-  //   title = "Hello from MobX";
-  // activities: Activity[] = [];
   activityRegistory = new Map<string, Activity>();
   selectedActivity: Activity | undefined = undefined;
   editMode = false;
@@ -16,14 +15,14 @@ export default class ActivityStore {
 
   get activityByDate() {
     return Array.from(this.activityRegistory.values()).sort(
-      (a, b) => Date.parse(a.date) - Date.parse(b.date)
+      (a, b) => a.date!.getTime() - b.date!.getTime()
     );
   }
 
   get groupedActivities() {
     return Object.entries(
       this.activityByDate.reduce((activities, activity) => {
-        const date = activity.date;
+        const date = format(activity.date!, "dd MMM yyyy");
         activities[date] = activities[date]
           ? [...activities[date], activity]
           : [activity];
@@ -71,28 +70,12 @@ export default class ActivityStore {
   };
 
   private setActivity = (activity: Activity) => {
-    activity.date = activity.date.split("T")[0];
+    activity.date = new Date(activity.date!);
     this.activityRegistory.set(activity.id, activity);
-    // this.activities.push(activity);
   };
   setLoadingInitial(state: boolean) {
     this.loadingInitial = state;
   }
-
-  // selectActivity = (id: string) => {
-  //   this.selectedActivity = this.activityRegistory.get(id);
-  //   // this.selectedActivity = this.activities.find((x) => x.id === id);
-  // };
-  // cancelSelectedActivity = () => {
-  //   this.selectedActivity = undefined;
-  // };
-  // openForm = (id?: string) => {
-  //   id ? this.selectActivity(id) : this.cancelSelectedActivity();
-  //   this.editMode = true;
-  // };
-  // closeForm = () => {
-  //   this.editMode = false;
-  // };
 
   createActivity = async (activity: Activity) => {
     this.loading = true;
@@ -101,7 +84,6 @@ export default class ActivityStore {
       await agent.Activities.create(activity);
       runInAction(() => {
         this.activityRegistory.set(activity.id, activity);
-        // this.activities.push(activity);
         this.selectedActivity = activity;
         this.editMode = false;
         this.loading = false;
@@ -119,10 +101,6 @@ export default class ActivityStore {
     try {
       await agent.Activities.update(activity.id, activity);
       runInAction(() => {
-        // this.activities = [
-        //   ...this.activities.filter((a) => a.id !== activity.id),
-        //   activity,
-        // ];
         this.activityRegistory.set(activity.id, activity);
         this.selectedActivity = activity;
         this.editMode = false;
@@ -142,8 +120,6 @@ export default class ActivityStore {
       await agent.Activities.delete(id);
       runInAction(() => {
         this.activityRegistory.delete(id);
-        // this.activities = [...this.activities.filter((a) => a.id !== id)];
-        // if (this.selectedActivity?.id === id) this.cancelSelectedActivity();
         this.loading = false;
       });
     } catch (error) {
@@ -153,13 +129,4 @@ export default class ActivityStore {
       });
     }
   };
-  //      runInAction(() => {
-  //   setTitle: action.bound,
-  //   makeObservable(this, {
-  //     title: observable,
-  //     setTitle: action,
-  //   });
-  //   setTitle = () => {
-  //     this.title = this.title + "!";
-  //   };
 }

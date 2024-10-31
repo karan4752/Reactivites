@@ -1,9 +1,6 @@
-// import React from "react";
 import { Button, Container, Menu } from "semantic-ui-react";
-// import { useStore } from "../stores/Store";
 import { NavLink } from "react-router-dom";
 export default function NavBar() {
-  // const { activityStore } = useStore();
   return (
     <Menu inverted fixed='top'>
       <Container>
@@ -24,11 +21,6 @@ export default function NavBar() {
             as={NavLink}
             to='/createActivity'
           />
-          {/* <Button
-            positive
-            content='Create Activity'
-            onClick={() => activityStore.openForm()}
-          /> */}
         </Menu.Item>
       </Container>
     </Menu>
