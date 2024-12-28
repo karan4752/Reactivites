@@ -18,6 +18,8 @@ namespace API.Extensions
             services.AddIdentityCore<AppUser>(op =>
             {
                 op.Password.RequireNonAlphanumeric = false;
+                op.User.RequireUniqueEmail=true;
+                
             }).AddEntityFrameworkStores<DataContext>();
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["TokenKey"]));
