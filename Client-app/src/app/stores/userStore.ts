@@ -10,8 +10,8 @@ export default class UserStore {
   constructor() {
     makeAutoObservable(this);
   }
-  get isLogggedIn(){
-    return !! this.user;
+  get isLogggedIn() {
+    return !!this.user;
   }
   login = async (creds: UserFormValues) => {
     // try {
@@ -27,8 +27,16 @@ export default class UserStore {
 
   logout = () => {
     store.commonStore.setToken(null);
-    localStorage.removeItem("jwt");
     this.user = null;
     router.navigate("/");
+  };
+
+  getUser = async () => {
+    try {
+      const user = await agent.Account.current();
+      runInAction(() => (this.user = user));
+    } catch (error) {
+      console.log(error);
+    }
   };
 }

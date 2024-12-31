@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { Grid, GridColumn } from "semantic-ui-react";
 import ActivityList from "./ActivityList";
 import { useStore } from "../../../app/stores/Store";
@@ -13,17 +14,17 @@ export default observer(function ActivityDashboard() {
     if (activityRegistory.size <= 1) {
       loadActivities();
     }
-  }, [activityRegistory.size]);
+  }, [loadActivities, activityRegistory.size]);
 
   if (activityStore.loadingInitial)
-    return <LoadingComponenet content='Loading app' />;
+    return <LoadingComponenet content='Loading activities' />;
   return (
     <Grid>
       <GridColumn width='10'>
         <ActivityList />
       </GridColumn>
       <GridColumn width='6'>
-        <ActivityFilters/>
+        <ActivityFilters />
       </GridColumn>
     </Grid>
   );
