@@ -8,6 +8,7 @@ import { ToastContainer } from "react-toastify";
 import { useStore } from "../stores/Store";
 import { useEffect } from "react";
 import LoadingComponenet from "./loadingComponenet";
+import ModalContainer from "../common/modals/modalContainer";
 
 function App() {
   const location = useLocation();
@@ -21,6 +22,7 @@ function App() {
     return <LoadingComponenet content='Loading app...' />;
   return (
     <>
+      <ModalContainer/>
       <ToastContainer position='bottom-right' theme='colored' />
       {location.pathname === "/" ? (
         <HomePage />
